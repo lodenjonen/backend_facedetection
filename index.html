@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #FEE4D0, #8B47B5);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        h1 {
+            color: #8B47B5;
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        form {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: bounceIn 1.5s ease;
+        }
+        input[type="file"] {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 2px solid #8B47B5;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #8B47B5;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        button:hover {
+            background-color: #6B36A3;
+            transform: scale(1.1);
+        }
+        #results {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #FFFFFF;
+            border: 2px solid #8B47B5;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            animation: slideIn 1s ease-in-out;
+        }
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(139, 71, 181, 0.6);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(139, 71, 181, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(139, 71, 181, 0.6);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Face Detection</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="image" name="image" accept="image/*" required>
+        <button type="submit">Upload Image</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('image', document.getElementById('image').files[0]);
+
+            const response = await fetch('/detect_faces', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById('results').innerHTML = JSON.stringify(data, null, 2);
+        };
+    </script>
+</body>
+</html>
